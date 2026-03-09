@@ -1,0 +1,2278 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CTI 2026 - Controle de Transferência de Insumos</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root {
+  --neon: #39ff14;
+  --neon-dim: #39ff1480;
+  --neon-glow: 0 0 10px #39ff1460, 0 0 20px #39ff1430;
+  --neon-glow-strong: 0 0 10px #39ff1480, 0 0 30px #39ff1450, 0 0 60px #39ff1420;
+  --bg: #0a0a0a;
+  --bg2: #111111;
+  --bg3: #1a1a1a;
+  --bg4: #222222;
+  --border: #2a2a2a;
+  --text: #e0e0e0;
+  --text-dim: #888;
+  --red: #ff4444;
+  --yellow: #ffcc00;
+  --blue: #00aaff;
+  --radius: 12px;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: var(--neon-dim); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--neon); }
+
+/* ========== LOGIN ========== */
+#loginScreen {
+  position: fixed; inset: 0; z-index: 1000;
+  background: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column;
+}
+
+.login-box {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 50px 40px;
+  width: 420px;
+  text-align: center;
+  box-shadow: 0 0 80px #39ff1410;
+  animation: fadeUp 0.6s ease;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.login-logo {
+  font-size: 3rem; font-weight: 900;
+  color: var(--neon);
+  text-shadow: var(--neon-glow-strong);
+  letter-spacing: -2px;
+  margin-bottom: 5px;
+}
+
+.login-sub {
+  font-size: 0.85rem; color: var(--text-dim);
+  margin-bottom: 35px;
+}
+
+.login-box label {
+  display: block; text-align: left;
+  font-size: 0.8rem; font-weight: 600;
+  color: var(--text-dim); margin-bottom: 8px;
+  text-transform: uppercase; letter-spacing: 1px;
+}
+
+.login-select {
+  width: 100%;
+  padding: 14px 16px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  font-size: 1rem;
+  font-family: 'Inter', sans-serif;
+  appearance: none;
+  cursor: pointer;
+  margin-bottom: 25px;
+  outline: none;
+  transition: border-color 0.3s;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2339ff14' stroke-width='2'%3E%3Cpolyline points='6,9 12,15 18,9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+}
+
+.login-select:focus { border-color: var(--neon); box-shadow: var(--neon-glow); }
+.login-select option { background: var(--bg3); color: var(--text); }
+
+.login-btn {
+  width: 100%;
+  padding: 14px;
+  background: var(--neon);
+  color: #000;
+  font-weight: 700;
+  font-size: 1rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s;
+}
+
+.login-btn:hover {
+  box-shadow: var(--neon-glow-strong);
+  transform: translateY(-2px);
+}
+
+.login-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ========== APP ========== */
+#app { display: none; }
+
+/* Header */
+.header {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 0 30px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky; top: 0; z-index: 100;
+}
+
+.header-left { display: flex; align-items: center; gap: 15px; }
+
+.header-logo {
+  font-size: 1.5rem; font-weight: 900;
+  color: var(--neon);
+  text-shadow: var(--neon-glow);
+  letter-spacing: -1px;
+}
+
+.header-divider {
+  width: 1px; height: 30px;
+  background: var(--border);
+}
+
+.header-title {
+  font-size: 0.85rem; color: var(--text-dim);
+  font-weight: 400;
+}
+
+.header-right { display: flex; align-items: center; gap: 20px; }
+
+.user-badge {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--bg3);
+  padding: 6px 14px 6px 6px;
+  border-radius: 50px;
+  border: 1px solid var(--border);
+}
+
+.user-avatar {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: var(--neon);
+  color: #000;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800;
+  font-size: 0.8rem;
+}
+
+.user-name { font-size: 0.85rem; font-weight: 600; }
+
+.btn-logout {
+  background: none; border: 1px solid var(--border);
+  color: var(--text-dim); padding: 6px 14px;
+  border-radius: 8px; cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
+  transition: all 0.2s;
+}
+
+.btn-logout:hover { border-color: var(--red); color: var(--red); }
+
+/* Nav Tabs */
+.nav-tabs {
+  display: flex; gap: 0;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 0 30px;
+}
+
+.nav-tab {
+  padding: 14px 24px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-dim);
+  border: none; background: none;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+}
+
+.nav-tab:hover { color: var(--text); }
+.nav-tab.active {
+  color: var(--neon);
+  border-bottom-color: var(--neon);
+}
+
+/* Content */
+.content { padding: 25px 30px; }
+
+/* Tab panels */
+.tab-panel { display: none; animation: fadeUp 0.3s ease; }
+.tab-panel.active { display: block; }
+
+/* ========== DASHBOARD ========== */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 25px;
+}
+
+.stat-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--neon);
+  opacity: 0.6;
+}
+
+.stat-card.red::before { background: var(--red); }
+.stat-card.blue::before { background: var(--blue); }
+.stat-card.yellow::before { background: var(--yellow); }
+.stat-card.orange::before { background: #ff8800; }
+.stat-card.orange .stat-value { color: #ff8800; }
+
+.stat-label {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--neon);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.stat-card.red .stat-value { color: var(--red); }
+.stat-card.blue .stat-value { color: var(--blue); }
+.stat-card.yellow .stat-value { color: var(--yellow); }
+
+.stat-detail {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  margin-top: 5px;
+}
+
+/* ========== FORM ========== */
+.form-section {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 25px;
+  margin-bottom: 20px;
+}
+
+.form-section-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--neon);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.form-section-title svg { width: 18px; height: 18px; }
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.form-group { display: flex; flex-direction: column; }
+
+.form-group.span-2 { grid-column: span 2; }
+
+.form-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.form-input, .form-select {
+  padding: 10px 14px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 0.9rem;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.form-input:focus, .form-select:focus {
+  border-color: var(--neon);
+  box-shadow: 0 0 0 2px #39ff1420;
+}
+
+.form-select {
+  appearance: none;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%2339ff14' stroke-width='2'%3E%3Cpolyline points='6,9 12,15 18,9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+}
+
+.form-select option { background: var(--bg3); }
+
+.form-actions {
+  display: flex; gap: 12px;
+  margin-top: 20px;
+  justify-content: flex-end;
+}
+
+.btn {
+  padding: 10px 24px;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex; align-items: center; gap: 8px;
+}
+
+.btn-primary {
+  background: var(--neon);
+  color: #000;
+}
+
+.btn-primary:hover {
+  box-shadow: var(--neon-glow);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: var(--bg3);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.btn-secondary:hover { border-color: var(--text-dim); }
+
+.btn-danger {
+  background: transparent;
+  color: var(--red);
+  border: 1px solid var(--red);
+}
+
+.btn-danger:hover { background: #ff444420; }
+
+/* ========== TABLE ========== */
+.table-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.search-box {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 14px;
+  min-width: 300px;
+}
+
+.search-box svg { width: 16px; height: 16px; color: var(--text-dim); flex-shrink: 0; }
+
+.search-input {
+  background: none; border: none;
+  color: var(--text); font-size: 0.9rem;
+  font-family: 'Inter', sans-serif;
+  outline: none; width: 100%;
+}
+
+.filter-group {
+  display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+}
+
+.filter-select {
+  padding: 8px 30px 8px 12px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 0.8rem;
+  font-family: 'Inter', sans-serif;
+  appearance: none;
+  cursor: pointer;
+  outline: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%2339ff14' stroke-width='2'%3E%3Cpolyline points='6,9 12,15 18,9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+}
+
+.filter-select option { background: var(--bg3); }
+
+.table-container {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.table-scroll { overflow-x: auto; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+
+thead th {
+  background: var(--bg3);
+  color: var(--neon);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 0.5px;
+  padding: 12px 14px;
+  text-align: left;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  cursor: pointer;
+  user-select: none;
+}
+
+thead th:hover { color: #fff; }
+
+tbody tr {
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
+}
+
+tbody tr:hover { background: #39ff1408; }
+
+tbody td {
+  padding: 10px 14px;
+  white-space: nowrap;
+  color: var(--text);
+}
+
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 50px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.badge-retirada { background: #39ff1420; color: var(--neon); }
+.badge-devolucao { background: #00aaff20; color: var(--blue); }
+.badge-transferencia { background: #ffcc0020; color: var(--yellow); }
+.badge-cancelada { background: #ff444420; color: var(--red); }
+.badge-other { background: #88888820; color: var(--text-dim); }
+
+.emb-sim { color: var(--neon); font-weight: 600; }
+.emb-nao { color: var(--text-dim); }
+
+/* Status badges */
+.status-pendente {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 10px;
+  border-radius: 50px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  background: #ff880025;
+  color: #ff8800;
+  border: 1px solid #ff880040;
+  animation: pulse-orange 2s infinite;
+}
+
+@keyframes pulse-orange {
+  0%, 100% { box-shadow: 0 0 0 0 #ff880030; }
+  50% { box-shadow: 0 0 8px 2px #ff880020; }
+}
+
+.status-finalizado {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 10px;
+  border-radius: 50px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  background: #39ff1420;
+  color: var(--neon);
+}
+
+.btn-finalizar {
+  background: none;
+  border: 1px solid #ff8800;
+  color: #ff8800;
+  padding: 3px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.btn-finalizar:hover { background: #ff880020; }
+
+/* Tipo NF toggle */
+.nf-toggle {
+  display: flex;
+  gap: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.nf-toggle-btn {
+  flex: 1;
+  padding: 10px 16px;
+  background: var(--bg3);
+  border: none;
+  color: var(--text-dim);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.nf-toggle-btn.active {
+  background: var(--neon);
+  color: #000;
+}
+
+.nf-toggle-btn.active.writer-active {
+  background: #ff8800;
+  color: #000;
+}
+
+.writer-notice {
+  margin-top: 10px;
+  padding: 10px 14px;
+  background: #ff880015;
+  border: 1px solid #ff880030;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  color: #ff8800;
+  display: none;
+}
+
+.writer-notice.visible { display: flex; align-items: center; gap: 8px; }
+
+/* Finalizar modal form */
+.modal-form-group {
+  margin-bottom: 14px;
+}
+
+.modal-form-group label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.modal-form-group input {
+  width: 100%;
+  padding: 10px 14px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 0.9rem;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+}
+
+.modal-form-group input:focus {
+  border-color: var(--neon);
+  box-shadow: 0 0 0 2px #39ff1420;
+}
+
+/* Detail modal */
+.detail-modal {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 0;
+  width: 700px;
+  max-width: 95vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: fadeUp 0.3s ease;
+}
+
+.detail-header {
+  padding: 20px 25px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  background: var(--bg2);
+  z-index: 1;
+}
+
+.detail-header-left { display: flex; align-items: center; gap: 12px; }
+
+.detail-title { font-size: 1rem; font-weight: 700; }
+
+.detail-close {
+  background: none; border: 1px solid var(--border);
+  color: var(--text-dim); width: 32px; height: 32px;
+  border-radius: 8px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s; font-size: 1.1rem;
+}
+.detail-close:hover { border-color: var(--red); color: var(--red); }
+
+.detail-body { padding: 20px 25px; }
+
+.detail-section { margin-bottom: 20px; }
+
+.detail-section-title {
+  font-size: 0.7rem; font-weight: 700;
+  color: var(--neon); text-transform: uppercase;
+  letter-spacing: 1px; margin-bottom: 10px;
+  padding-bottom: 6px; border-bottom: 1px solid var(--border);
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 24px;
+}
+
+.detail-field-label {
+  font-size: 0.65rem; font-weight: 600;
+  color: var(--text-dim); text-transform: uppercase;
+  letter-spacing: 0.5px; margin-bottom: 2px;
+}
+
+.detail-field-value {
+  font-size: 0.9rem; color: var(--text); font-weight: 500;
+}
+
+.detail-field-value.mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.detail-field-value.empty {
+  color: var(--text-dim); font-style: italic; font-weight: 400;
+}
+
+.detail-field.full { grid-column: 1 / -1; }
+
+.detail-footer {
+  padding: 16px 25px; border-top: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 0.75rem; color: var(--text-dim);
+}
+
+.detail-actions { display: flex; gap: 8px; }
+
+tbody tr { cursor: pointer; }
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-top: 1px solid var(--border);
+  font-size: 0.8rem;
+  color: var(--text-dim);
+}
+
+.pagination-btns { display: flex; gap: 4px; }
+
+.pg-btn {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
+  transition: all 0.2s;
+}
+
+.pg-btn:hover { border-color: var(--neon); color: var(--neon); }
+.pg-btn.active { background: var(--neon); color: #000; border-color: var(--neon); font-weight: 700; }
+.pg-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+/* Delete button in table */
+.btn-del {
+  background: none; border: none;
+  color: var(--text-dim); cursor: pointer;
+  padding: 4px; border-radius: 4px;
+  transition: all 0.2s;
+}
+.btn-del:hover { color: var(--red); background: #ff444420; }
+
+/* Toast */
+.toast-container {
+  position: fixed;
+  bottom: 30px; right: 30px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.toast {
+  background: var(--bg3);
+  border: 1px solid var(--neon);
+  border-radius: 10px;
+  padding: 14px 20px;
+  color: var(--text);
+  font-size: 0.85rem;
+  box-shadow: var(--neon-glow);
+  animation: slideIn 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 280px;
+}
+
+.toast.error { border-color: var(--red); box-shadow: 0 0 10px #ff444440; }
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* Inserted-by marker */
+.inserted-by {
+  font-size: 0.7rem;
+  color: var(--neon);
+  font-weight: 500;
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: #000000cc;
+  z-index: 500;
+  display: flex; align-items: center; justify-content: center;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 30px;
+  width: 500px;
+  max-width: 90vw;
+  animation: fadeUp 0.3s ease;
+}
+
+.modal-title {
+  font-size: 1.1rem; font-weight: 700;
+  margin-bottom: 15px;
+  color: var(--text);
+}
+
+.modal-text { color: var(--text-dim); font-size: 0.9rem; margin-bottom: 20px; line-height: 1.5; }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .content { padding: 15px; }
+  .form-grid { grid-template-columns: 1fr; }
+  .form-group.span-2 { grid-column: span 1; }
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+  .search-box { min-width: 100%; }
+  .table-toolbar { flex-direction: column; align-items: stretch; }
+  .header { padding: 0 15px; }
+  .nav-tabs { padding: 0 15px; overflow-x: auto; }
+}
+
+/* Searchable select */
+.select-search-wrapper {
+  position: relative;
+}
+
+.select-search-input {
+  width: 100%;
+  padding: 10px 14px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 0.9rem;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.select-search-input:focus {
+  border-color: var(--neon);
+  box-shadow: 0 0 0 2px #39ff1420;
+}
+
+.select-search-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0; right: 0;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 0 0 8px 8px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 50;
+  display: none;
+}
+
+.select-search-dropdown.open { display: block; }
+
+.select-search-option {
+  padding: 8px 14px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background 0.1s;
+}
+
+.select-search-option:hover {
+  background: #39ff1415;
+  color: var(--neon);
+}
+
+/* Chart-like bars */
+.bar-chart {
+  display: flex; flex-direction: column; gap: 8px;
+  margin-top: 15px;
+}
+
+.bar-row {
+  display: flex; align-items: center; gap: 12px;
+}
+
+.bar-label {
+  font-size: 0.75rem; color: var(--text-dim);
+  min-width: 130px; text-align: right;
+}
+
+.bar-track {
+  flex: 1; height: 22px;
+  background: var(--bg3);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.bar-fill {
+  height: 100%;
+  background: var(--neon);
+  border-radius: 4px;
+  transition: width 0.8s ease;
+  position: relative;
+}
+
+.bar-fill::after {
+  content: attr(data-value);
+  position: absolute;
+  right: 8px; top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #000;
+}
+
+.bar-fill.alt1 { background: var(--blue); }
+.bar-fill.alt2 { background: var(--yellow); }
+.bar-fill.alt3 { background: var(--red); }
+</style>
+</head>
+<body>
+
+<!-- ========== LOGIN ========== -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">CTI</div>
+    <div class="login-sub">Controle de Transferência de Insumos — 2026</div>
+    <label>Identificação do Usuário</label>
+    <select class="login-select" id="loginUser" onchange="document.getElementById('loginBtn').disabled = !this.value">
+      <option value="">Selecione seu nome...</option>
+    </select>
+    <button class="login-btn" id="loginBtn" disabled onclick="doLogin()">Entrar no Sistema</button>
+  </div>
+</div>
+
+<!-- ========== APP ========== -->
+<div id="app">
+  <!-- Header -->
+  <div class="header">
+    <div class="header-left">
+      <div class="header-logo">CTI</div>
+      <div class="header-divider"></div>
+      <div class="header-title">Controle de Transferência de Insumos — 2026</div>
+    </div>
+    <div class="header-right">
+      <div class="user-badge">
+        <div class="user-avatar" id="userAvatar"></div>
+        <span class="user-name" id="userName"></span>
+      </div>
+      <button class="btn-logout" onclick="doLogout()">Sair</button>
+    </div>
+  </div>
+
+  <!-- Nav -->
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="switchTab('dashboard', this)">
+      <svg style="width:14px;height:14px;display:inline;vertical-align:-2px;margin-right:4px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </button>
+    <button class="nav-tab" onclick="switchTab('novo', this)">
+      <svg style="width:14px;height:14px;display:inline;vertical-align:-2px;margin-right:4px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+      Nova Movimentação
+    </button>
+    <button class="nav-tab" onclick="switchTab('registros', this)">
+      <svg style="width:14px;height:14px;display:inline;vertical-align:-2px;margin-right:4px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      Registros
+    </button>
+  </div>
+
+  <div class="content">
+    <!-- ========== DASHBOARD ========== -->
+    <div class="tab-panel active" id="tab-dashboard">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Total Movimentações</div>
+          <div class="stat-value" id="statTotal">0</div>
+          <div class="stat-detail">registros no sistema</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-label">Retiradas</div>
+          <div class="stat-value" id="statRetiradas">0</div>
+          <div class="stat-detail">saídas do almoxarifado</div>
+        </div>
+        <div class="stat-card yellow">
+          <div class="stat-label">Devoluções</div>
+          <div class="stat-value" id="statDevolucoes">0</div>
+          <div class="stat-detail">retornos ao almoxarifado</div>
+        </div>
+        <div class="stat-card orange">
+          <div class="stat-label">Writers Pendentes</div>
+          <div class="stat-value" id="statWriters">0</div>
+          <div class="stat-detail">aguardando mov. sistêmico</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-label">Pendências Embalagem</div>
+          <div class="stat-value" id="statPendEmb">0</div>
+          <div class="stat-detail">embalagens a devolver</div>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+        <div class="form-section">
+          <div class="form-section-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            Movimentações por Tipo
+          </div>
+          <div class="bar-chart" id="chartTipos"></div>
+        </div>
+        <div class="form-section">
+          <div class="form-section-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Registros por Usuário
+          </div>
+          <div class="bar-chart" id="chartUsuarios"></div>
+        </div>
+      </div>
+
+      <div class="form-section" style="margin-top:16px">
+        <div class="form-section-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Últimas Movimentações
+        </div>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Data</th><th>Tipo</th><th>Status</th><th>Origem</th><th>Destino</th><th>Material</th><th>Qtd</th><th>Inserido por</th>
+              </tr>
+            </thead>
+            <tbody id="recentTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== NOVA MOVIMENTAÇÃO ========== -->
+    <div class="tab-panel" id="tab-novo">
+      <form id="movForm" onsubmit="return saveMovimento(event)">
+        <div class="form-section">
+          <div class="form-section-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Informações da Movimentação
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Data Mov. Físico *</label>
+              <input type="date" class="form-input" id="fDataFisico" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Tipo *</label>
+              <select class="form-select" id="fTipo" required onchange="onTipoChange()">
+                <option value="">Selecione...</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Origem / EPS Fornecedora *</label>
+              <div class="select-search-wrapper">
+                <input type="text" class="select-search-input" id="fOrigem" placeholder="Digite para buscar..." autocomplete="off" required>
+                <div class="select-search-dropdown" id="fOrigemDropdown"></div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Destino (Fazenda) *</label>
+              <div class="select-search-wrapper">
+                <input type="text" class="select-search-input" id="fDestino" placeholder="Digite para buscar..." autocomplete="off" required>
+                <div class="select-search-dropdown" id="fDestinoDropdown"></div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">EPS Destino</label>
+              <select class="form-select" id="fEpsDestino">
+                <option value="">Selecione...</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Supervisor *</label>
+              <select class="form-select" id="fSupervisor" required>
+                <option value="">Selecione...</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Centro Destino</label>
+              <select class="form-select" id="fCentro">
+                <option value="">Selecione...</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Depósito</label>
+              <select class="form-select" id="fDeposito">
+                <option value="">Selecione...</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Dados do Pedido / NF
+          </div>
+
+          <div class="form-group" style="margin-bottom:16px">
+            <label class="form-label">Tipo de Nota Fiscal *</label>
+            <div class="nf-toggle" id="nfToggle">
+              <button type="button" class="nf-toggle-btn active" onclick="setNfTipo('pedido')">Via Pedido</button>
+              <button type="button" class="nf-toggle-btn" onclick="setNfTipo('writer')">WRITER (Sem mov. sistêmico)</button>
+            </div>
+          </div>
+
+          <div class="writer-notice" id="writerNotice">
+            <svg style="width:16px;height:16px;flex-shrink:0" viewBox="0 0 24 24" fill="none" stroke="#ff8800" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            Movimento físico sem registro no sistema. Ficará como pendência para finalizar depois (inserir Data Mov. Sistêmico e MIGO).
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group" id="fPedidoGroup">
+              <label class="form-label">Nº Pedido *</label>
+              <input type="text" class="form-input" id="fPedido" placeholder="Nº do pedido">
+            </div>
+            <div class="form-group" id="fMotivoGroup" style="display:none">
+              <label class="form-label">Motivo WRITER *</label>
+              <input type="text" class="form-input" id="fMotivo" placeholder="Ex: Pendência Saldo SAP">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Remessa</label>
+              <input type="text" class="form-input" id="fRemessa" placeholder="Nº da remessa">
+            </div>
+            <div class="form-group">
+              <label class="form-label">NF *</label>
+              <input type="text" class="form-input" id="fNF" placeholder="Nº da nota fiscal" required>
+            </div>
+            <div class="form-group" id="fDataSistemicoGroup">
+              <label class="form-label">Data Mov. Sistêmico</label>
+              <input type="date" class="form-input" id="fDataSistemico">
+            </div>
+            <div class="form-group" id="fMigoGroup">
+              <label class="form-label">MIGO</label>
+              <input type="text" class="form-input" id="fMigo" placeholder="Nº MIGO">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+            Material
+          </div>
+          <div class="form-grid">
+            <div class="form-group span-2">
+              <label class="form-label">Material *</label>
+              <div class="select-search-wrapper">
+                <input type="text" class="select-search-input" id="fMaterial" placeholder="Digite para buscar material..." autocomplete="off" required>
+                <div class="select-search-dropdown" id="fMaterialDropdown"></div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Código Produto</label>
+              <input type="text" class="form-input" id="fCodProduto" readonly style="opacity:0.6">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Quantidade *</label>
+              <input type="number" class="form-input" id="fQuantidade" required min="0" step="any">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Unidade</label>
+              <input type="text" class="form-input" id="fUnidade" readonly style="opacity:0.6">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Lote</label>
+              <input type="text" class="form-input" id="fLote" placeholder="Nº do lote">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section" id="embSection" style="display:none">
+          <div class="form-section-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/></svg>
+            Controle de Embalagens
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Data Devolução Embalagens</label>
+              <input type="date" class="form-input" id="fDataDevEmb">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Embalagens a Devolver</label>
+              <input type="number" class="form-input" id="fEmbDevolver" min="0" step="1">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Caixas a Devolver</label>
+              <input type="number" class="form-input" id="fCaixasDevolver" min="0" step="1">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Contabilizar Embalagem</label>
+              <select class="form-select" id="fContEmb">
+                <option value="SIM">SIM</option>
+                <option value="NÃO">NÃO</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" onclick="resetForm()">Limpar</button>
+          <button type="submit" class="btn btn-primary">
+            <svg style="width:16px;height:16px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Salvar Movimentação
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- ========== REGISTROS ========== -->
+    <div class="tab-panel" id="tab-registros">
+      <div class="table-toolbar">
+        <div class="search-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" class="search-input" id="searchInput" placeholder="Buscar por qualquer campo..." oninput="filterTable()">
+        </div>
+        <div class="filter-group">
+          <select class="filter-select" id="filterTipo" onchange="filterTable()">
+            <option value="">Todos os tipos</option>
+          </select>
+          <select class="filter-select" id="filterStatus" onchange="filterTable()">
+            <option value="">Todos os status</option>
+            <option value="pendente">Pendentes (WRITER)</option>
+            <option value="finalizado">Finalizados</option>
+          </select>
+          <select class="filter-select" id="filterUser" onchange="filterTable()">
+            <option value="">Todos os usuários</option>
+          </select>
+          <button class="btn btn-secondary" onclick="exportCSV()" style="padding:8px 16px;font-size:0.8rem">
+            <svg style="width:14px;height:14px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Exportar CSV
+          </button>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <div class="table-scroll" style="max-height:60vh">
+          <table>
+            <thead>
+              <tr>
+                <th onclick="sortTable('id')">#</th>
+                <th onclick="sortTable('dataFisico')">Data</th>
+                <th onclick="sortTable('tipo')">Tipo</th>
+                <th onclick="sortTable('status')">Status</th>
+                <th onclick="sortTable('origem')">Origem</th>
+                <th onclick="sortTable('destino')">Destino</th>
+                <th onclick="sortTable('material')">Material</th>
+                <th onclick="sortTable('quantidade')">Qtd</th>
+                <th>Un</th>
+                <th onclick="sortTable('inseridoPor')">Inserido por</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="mainTable"></tbody>
+          </table>
+        </div>
+        <div class="pagination">
+          <span id="pageInfo">Mostrando 0 de 0 registros</span>
+          <div class="pagination-btns" id="paginationBtns"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+// ==================== DATA ====================
+const DATA = {
+  tipos: ["Amostra","Baldeio - Desvio de carga","Baldeio - Entre Fazendas","Cancelada","Devolução","Mov. Transporte Materiais","Recuperação Furto","Retirada","Transferencia Divisão Insumos","Transferencia Entre EPS","Transferencia interna MSFC"],
+
+  eps: [
+    {n:"AMADEO MS",d:"9526"},{n:"AMBIENT MS",d:"9506"},{n:"ASJ MS GODOY",d:"9504"},{n:"AVIAX MS",d:"9513"},
+    {n:"CJ MS",d:"9520"},{n:"COSTA PINTO MS",d:"9519"},{n:"CR2 MS",d:"9528"},{n:"DIRETA MS",d:"9511"},
+    {n:"EMFLORA MS",d:"9505"},{n:"EMFLORS MS",d:"9501"},{n:"FORÇA DO CAMPO",d:"9510"},{n:"GARRA MS",d:"9518"},
+    {n:"GM MS",d:"9521"},{n:"GN MS",d:"9529"},{n:"HP AEROAGRICOLA",d:"9527"},{n:"INOVESA MS",d:"9508"},
+    {n:"JEMA MS",d:"9507"},{n:"JM MS",d:"9522"},{n:"JSF MS",d:"9500"},{n:"JV MS",d:"9523"},
+    {n:"LARSIL MS",d:"9503"},{n:"LM MS",d:"9530"},{n:"MACER MS",d:"9517"},{n:"MARCONATO",d:"9525"},
+    {n:"MORANDI MS",d:"9512"},{n:"PARCETEC MS",d:"9502"},{n:"PW MS",d:"9516"},{n:"TECA MS",d:"9509"},
+    {n:"VILLELA MS",d:"9514"},{n:"VS MS",d:"9524"},{n:"ESTOQUE PROJETOS",d:"3155"},{n:"MSFC",d:"9515"},
+    {n:"MSFC DIVISAO AC",d:"6127"},{n:"MSFC DIVISAO BTG",d:"6017"},{n:"MSFC VIVEIRO AC",d:"3160"},
+    {n:"MSFC ALMOX. AUTOMOTIVA BTG",d:"3175"},{n:"MSFC - MF 01",d:"9515"},{n:"MSFC - MF 02",d:"9515"},
+    {n:"MSFC - MF 03",d:"9515"},{n:"MSFC - MF 04",d:"9515"},{n:"MSFC - MODULO I",d:"9515"},
+    {n:"MSFC - MODULO II",d:"9515"},{n:"MSFC - MODULO III",d:"9515"},
+    {n:"MSFC 4 - FORMIGA - ADRIANO",d:"9515"},{n:"MSFC 5 - FORMIGA - FAGNER",d:"9515"},
+    {n:"MSFC ALAN LIMA",d:"9515"},{n:"MSFC ANJICLEDIO S.",d:"9515"},{n:"MSFC EMERSON A.",d:"9515"},
+    {n:"MSFC FELIPE STEINER",d:"9515"},{n:"MSFC GILMAR M.",d:"9515"},{n:"MSFC GIOVANI B.",d:"9515"},
+    {n:"MSFC JOHNNY S.",d:"9515"},{n:"MSFC JUSCELINO S.",d:"9515"},{n:"MSFC LEANDRO M.",d:"9515"},
+    {n:"MSFC LOGISTICA",d:"9515"},{n:"MSFC MILENA S.",d:"9515"},{n:"MSFC NUBIA M.",d:"9515"},
+    {n:"MSFC ORLEY C.",d:"9515"},{n:"MSFC PAULO V.",d:"9515"},{n:"MSFC PESQUISA",d:"9515"},
+    {n:"MSFC ROBERTO L.",d:"9515"},{n:"MSFC SERGIO P.",d:"9515"},{n:"MSFC WAGNER C.",d:"9515"},
+    {n:"MSFC WAGNER G.",d:"9515"},{n:"MSFC WAGNER L.",d:"9515"},{n:"MSFC WENDELL F.",d:"9515"},
+    {n:"AGTECH MS",d:"9531"}
+  ],
+
+  centros: [
+    {id:"9501",n:"MSFC - CAMPO GRANDE / MS"},{id:"9502",n:"MSFC - AGUA CLARA / MS"},
+    {id:"9503",n:"MSFC - BATAGUASSU / MS"},{id:"9504",n:"MSFC - BRASILÂNDIA / MS"},
+    {id:"9505",n:"MSFC - INOCÊNCIA / MS"},{id:"9506",n:"MSFC - JARAGUARI / MS"},
+    {id:"9507",n:"MSFC - RIBAS DO RIO PARDO / MS"},{id:"9508",n:"MSFC - SANTA RITA PARDO / MS"},
+    {id:"9510",n:"MSFC - TRÊS LAGOAS / MS"},{id:"9511",n:"MSFC - ÁGUA CLARA DIV. FLORESTAL"},
+    {id:"9513",n:"MSFC - ÁGUA CLARA ALM. AUTOMOTIVA"},{id:"9516",n:"MSFC - BATAGUASSU DIV. FLORESTAL"},
+    {id:"9517",n:"MSFC - NOVA ANDRADINA / MS"},{id:"9518",n:"MSFC - BANDEIRANTES / MS"},
+    {id:"9519",n:"MSFC - PRES. VENCESLAU / SP"},{id:"9520",n:"MSFC - MARABÁ PAULISTA / SP"},
+    {id:"9521",n:"MSFC - CAIUÁ / SP"},{id:"9522",n:"MSFC - PRES. EPITÁCIO / SP"},
+    {id:"9527",n:"MSFC - ANAURILÂNDIA / MS"},{id:"9528",n:"MSFC - ROSANA / SP"},
+    {id:"9529",n:"MSFC - NOVA ALVORADA SUL / MS"}
+  ],
+
+  origens: [
+    "Almoxarifado Água Clara","Almoxarifado Bataguassu","CONQUISTA GLEBA A - RRP","CONQUISTA GLEBA B - RRP",
+    "FLORESTA II - SRP","GALILÉIA - SRP","GUARUJÁ I - RRP","HP AEROAGRICOLA","MACHADO - ACL",
+    "MSFC - MODULO I","NOSSA SENHORA APARECIDA V - INC","NOSSA SENHORA APARECIDA VI GLEBA B - SRP",
+    "PACAEMBU - SRP","PARATY - RRP","RECREIO - SRP","SAN REMO - ACL","SANTA LUZIA III - SRP",
+    "SANTA RITA - RRP","SANTA ROSA II - BTG","SÃO GUILHERME - RRP","SÃO JOSÉ II - BTG",
+    "SÃO JOSÉ III - SRP","SÃO JOÃO II - BDR","SÃO MANOEL II - BRS","SÃO PEDRO - RRP",
+    "TRÊS MENINAS - RRP","UNIÃO - BRS","VILLELA MS","VIVEIRO MSFC BTG"
+  ],
+
+  supervisores: [
+    "ADILSON GOMES","ALAOR APARECIDO","ANJICLEDIO SANTOS","ELBIMAR POMPILIO","FAGNER SOARES",
+    "FELIPE STEINER","FERNANDO GOMES","GABRIEL VICTOR","GABRIELA COUTO","GILMAR SANTOS",
+    "GIOVANI JUNIOR","GUSTAVO BENTO","GUSTAVO MATHIAS","HELENA COSTA","JEAN RODRIGUES",
+    "JOAO HENRIQUE NASCIMENTO","JOAO PAULO CAMARGO","JOAO PEQUENO","JOAO VITOR POPOVITS",
+    "JOHNNY SANTOS","JUSCELINO OLIVEIRA","JUSCELINO SANTOS","LEANDRO MAIA","LUCIANO SOARES",
+    "MILENA SOUZA","NUBIA MARTINS","ORLEY CLAUDINO","PAULO VICTOR","PHILIPPE SOUZA",
+    "ROBERTO LIMA","WAGNER CARVALHO","WAGNER GARCIA","WENDELL FERREIRA","YASMIM GOBBO"
+  ],
+
+  usuarios: ["Francine","Davi","Junior","Carlos","Sabrina","Luciano","João Pedro","Ana Luiza"],
+
+  materiais: [
+    {d:"ADUBO 06-34-05",c:"90000850",g:"Fertilizantes",u:"KG",e:"N"},
+    {d:"ADUBO 07-22-13",c:"90000825",g:"Fertilizantes",u:"KG",e:"N"},
+    {d:"ADUBO 1000 KG 00-00-54",c:"90000764",g:"Fertilizantes",u:"KG",e:"N"},
+    {d:"ADUBO 1000 KG 19-00-19",c:"90000816",g:"Fertilizantes",u:"KG",e:"N"},
+    {d:"ADUBO 1000 KG 22-00-12",c:"90000760",g:"Fertilizantes",u:"KG",e:"N"},
+    {d:"ADUBO 1000KG 08-39-09",c:"90000832",g:"Fertilizantes",u:"KG",e:"N"},
+    {d:"ADUBO 1000KG 09-27-9",c:"90000823",g:"Fertilizantes",u:"KG",e:"N"},
+    {d:"ADUBO 1000KG 09-36-07",c:"90000831",g:"Fertilizantes",u:"KG",e:"N"},
+    {d:"ADUBO 1000KG 10-00-35",c:"90000758",g:"Fertilizantes",u:"KG",e:"N"},
+    {d:"ADUBO 1000KG 13-24-13",c:"90000799",g:"Fertilizantes",u:"KG",e:"N"},
+    {d:"ADUBO 1000KG 14-00-28",c:"90000757",g:"Fertilizantes",u:"KG",e:"N"},
+    {d:"ADUBO 11-23-12",c:"90000849",g:"Fertilizantes",u:"KG",e:"N"},
+    {d:"ADUBO ACRIL 25KG COPOLIMERO",c:"90000821",g:"Fertilizantes",u:"KG",e:"S"},
+    {d:"ADUBO BOROTOP 25KG OCTABORATO SODIO TETR",c:"90000782",g:"Fertilizantes",u:"KG",e:"S"},
+    {d:"ADUBO MAP 25KG",c:"90000804",g:"Fertilizantes",u:"KG",e:"S"},
+    {d:"CAL VIRGEM HIDRATADA",c:"120037791",g:"Apoio",u:"",e:"S"},
+    {d:"CULTIVO- FERTILIZANTE ORGANOMINERAL",c:"90000966",g:"Fertilizantes",u:"KG",e:"N"},
+    {d:"EFF OIL CONCENTRADO EMULSIONADO",c:"90000772",g:"Adjuvante",u:"L",e:"S"},
+    {d:"FERTILIZANTES SULFATO DE ZINCO",c:"90000807",g:"Fertilizantes",u:"KG",e:"N"},
+    {d:"FINALE HERBICIDA GALAO 10L",c:"90000754",g:"Herbicida",u:"L",e:"S"},
+    {d:"FIPRONIL PIRAZOL EMBALAGEM 1KG GRANULADO",c:"90000774",g:"Inseticida",u:"KG",e:"S"},
+    {d:"FORDOR HERBICIDA EMBALAGEM 500G",c:"90000769",g:"Herbicida",u:"KG",e:"S"},
+    {d:"FORMICIDA GRANULADO MIREX-S 500G",c:"90000755",g:"Formicida",u:"KG",e:"S"},
+    {d:"GEL PARA PORTA ISCA FORMICIDA",c:"90000780",g:"Formicida",u:"KG",e:"S"},
+    {d:"GLIFOSATO HERBICIDA GALAO 20L",c:"90000753",g:"Herbicida",u:"L",e:"S"},
+    {d:"GOAL HERBICIDA GALAO 5L",c:"90000768",g:"Herbicida",u:"L",e:"S"},
+    {d:"GONDOR HERBICIDA GALAO 5L",c:"90000770",g:"Herbicida",u:"L",e:"S"},
+    {d:"GRANUTEC FORMICIDA EMBALAGEM 500G",c:"90000776",g:"Formicida",u:"KG",e:"S"},
+    {d:"HALOGREEN HERBICIDA FRASCO 100ML",c:"90000778",g:"Herbicida",u:"L",e:"S"},
+    {d:"HIDROGEL POLIMERO",c:"90000779",g:"Apoio",u:"KG",e:"S"},
+    {d:"ISCA FORMICIDA ATTAMEX-S EMBALAGEM 500G",c:"90000756",g:"Formicida",u:"KG",e:"S"},
+    {d:"ISCA FORMICIDA DINAGRO-S 500G",c:"90000775",g:"Formicida",u:"KG",e:"S"},
+    {d:"ISCA FORMICIDA LANDRIN-F 500G",c:"90000781",g:"Formicida",u:"KG",e:"S"},
+    {d:"ISCA FORMICIDA PIKAPAU-S 500G",c:"90000813",g:"Formicida",u:"KG",e:"S"},
+    {d:"ISCA FORMICIDA TANK 500G",c:"90000967",g:"Formicida",u:"KG",e:"S"},
+    {d:"KEMIRON HERBICIDA GALAO 5L",c:"90000766",g:"Herbicida",u:"L",e:"S"},
+    {d:"MIREX-S MAX 500G",c:"90000815",g:"Formicida",u:"KG",e:"S"},
+    {d:"OLEO MINERAL CONCENTRADO EMULSIONADO",c:"90000822",g:"Adjuvante",u:"L",e:"S"},
+    {d:"OXIMIL FUNGICIDA GALAO 5L",c:"90000793",g:"Fungicida",u:"L",e:"S"},
+    {d:"PODIUM HERBICIDA GALAO 5L",c:"90000786",g:"Herbicida",u:"L",e:"S"},
+    {d:"PROVENCE HERBICIDA GALAO 5L",c:"90000798",g:"Herbicida",u:"L",e:"S"},
+    {d:"REGGAE HERBICIDA 20L",c:"90000785",g:"Herbicida",u:"L",e:"S"},
+    {d:"SCOUT HERBICIDA GALAO 5L",c:"90000789",g:"Herbicida",u:"L",e:"S"},
+    {d:"SELECT HERBICIDA GALAO 5L",c:"90000787",g:"Herbicida",u:"L",e:"S"},
+    {d:"SOBERAN HERBICIDA 1L",c:"90000809",g:"Herbicida",u:"L",e:"S"},
+    {d:"SULFATO DE AMONIO",c:"90000187",g:"Fertilizantes",u:"KG",e:"N"},
+    {d:"SULFENTRAZONA HERBICIDA GALAO 5L",c:"90000771",g:"Herbicida",u:"L",e:"S"},
+    {d:"SUMYZIN HERBICIDA GALAO 5L",c:"90000791",g:"Herbicida",u:"L",e:"S"},
+    {d:"TUCUPI HERBICIDA GALAO 20L",c:"90000794",g:"Herbicida",u:"L",e:"S"},
+    {d:"VERDICT HERBICIDA GALAO 5L",c:"90000790",g:"Herbicida",u:"L",e:"S"},
+  ],
+
+  fazendas: []
+};
+
+// Fazendas loaded dynamically
+const FAZENDAS_LIST = [
+  "A C PRUDENTINA - RRP","AGUINHA - NAD","ALEGRIA - CPG","ALEGRIA II GLEBA A - ANR",
+  "ALEGRIA II GLEBA B - ANR","ALVORADA - TLS","ALVORADA II - RRP","ALVORADA III - SRP",
+  "ALVORADA IV - CPG","ALVORADA V - SRP","ALVORADA VI - SRP","ALVORADA VII - SRP",
+  "ARCO ÍRIS GLEBA A - ANR","ARUANDA E UNIÃO - RRP","ÁGUA BRANCA - SRP","ÁGUA LIMPA - SRP",
+  "BARRA DO BURITI - TLS","BARRO BRANCO - SRP","BOA ESPERANÇA - SRP","BOA VISTA I - RRP",
+  "BOA VISTA II - BRS","BRASILÂNDIA I - BDR","BRASILÂNDIA II - BDR","BUGIO - BTG",
+  "BURITI I - RRP","BURITI II - SRP","CACHOEIRA - CPG","CAMPO AZUL - RRP",
+  "CAMPO BELO - SRP","CAMPINA - SRP","CAPIM BRANCO - ACL","CERVO - BTG",
+  "CHAPADA - CPG","CHAPADÃO - RRP","CONQUISTA GLEBA A - RRP","CONQUISTA GLEBA B - RRP",
+  "COTIA - NAS","CRISTALINA - TLS","DUAS IRMÃS - PRV","DUAS IRMÃS II - PRV",
+  "ESTÂNCIA ELIZA - SRP","ESTÂNCIA GALILÉIA - SRP","FAZENDA MODELO - CPG","FLORESTA - SRP",
+  "FLORESTA II - SRP","GALILÉIA - SRP","GUARUJÁ - RRP","GUARUJÁ I - RRP",
+  "GUARUJÁ II - RRP","GUATAMBU - NAD","IBIRAPUERA - CPG","IPANEMA - SRP",
+  "IPIRANGA - CPG","JABORANDI - SRP","JATAÍ - TLS","JEQUITIBÁ - ACL",
+  "LAGOA AZUL - RRP","LAGOA GRANDE - ANR","MACHADO - ACL","MELANCIA - RRP",
+  "MEMÓRIA GLEBA A - SRP","MEMÓRIA GLEBA B - SRP","MIRASSOL - CPG","MONTE ALEGRE - SRP",
+  "NOVA ESPERANÇA - SRP","NOVO HORIZONTE - SRP","NOSSA SENHORA APARECIDA V - INC",
+  "NOSSA SENHORA APARECIDA VI GLEBA B - SRP","PACAEMBU - SRP","PAINEIRA - ACL",
+  "PANORAMA I - PRE","PANORAMA II - PRE","PARATY - RRP","PERDIZES - BTG",
+  "RANCHO GRANDE - SRP","RECANTO DO LONTRA - CPG","RECREIO - SRP","RIO CLARO - SRP",
+  "SAN REMO - ACL","SANTA CLARA I - NAD","SANTA CLARA II - SRP","SANTA ELÁDIA - BRS",
+  "SANTA HELENA - SRP","SANTA HELENA II - SRP","SANTA HELENA III GLEBA A - SRP",
+  "SANTA HELENA III GLEBA B - SRP","SANTA IZABEL - SRP","SANTA LUZIA - SRP",
+  "SANTA LUZIA II - SRP","SANTA LUZIA III - SRP","SANTA MARIA - RRP",
+  "SANTA MARIA II - RRP","SANTA MARIA III - RRP","SANTA RITA - RRP",
+  "SANTA ROSA - BTG","SANTA ROSA II - BTG","SANTO ANTÔNIO - RRP",
+  "SÃO FRANCISCO - ACL","SÃO GUILHERME - RRP","SÃO JOÃO II - BDR",
+  "SÃO JOSÉ - SRP","SÃO JOSÉ II - BTG","SÃO JOSÉ III - SRP",
+  "SÃO MANOEL - BRS","SÃO MANOEL II - BRS","SÃO PEDRO - RRP",
+  "SÃO PEDRO II - NAD","TABAPUÃ - RRP","TRÊS MENINAS - RRP",
+  "TUCANO - TLS","TUCANO II - TLS","TUCANO III - TLS","UNIÃO - BRS",
+  "VALE DO ANHANDUÍ - CPG","VITÓRIA - RRP"
+];
+
+// ==================== STATE ====================
+let currentUser = '';
+let movimentos = [];
+let editingId = null;
+let currentPage = 1;
+let sortField = 'id';
+let sortDir = -1;
+const PAGE_SIZE = 25;
+
+// ==================== INIT ====================
+function init() {
+  loadFromStorage();
+  populateSelects();
+  setupSearchableSelects();
+
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('fDataFisico').value = today;
+
+  // Load base data from JSON if not already loaded
+  if (movimentos.length === 0) {
+    fetch('base_data.json')
+      .then(r => r.json())
+      .then(data => {
+        // Assign IDs
+        data.forEach((m, i) => {
+          m.id = i + 1;
+          m.inseridoEm = '';
+        });
+        movimentos = data;
+        saveToStorage();
+        updateDashboard();
+        renderTable();
+      })
+      .catch(e => console.log('No base data file found, starting fresh.'));
+  }
+}
+
+function loadFromStorage() {
+  try {
+    const saved = localStorage.getItem('cti_movimentos');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (parsed.length > 0) movimentos = parsed;
+    }
+  } catch(e) {}
+}
+
+function saveToStorage() {
+  localStorage.setItem('cti_movimentos', JSON.stringify(movimentos));
+}
+
+function populateSelects() {
+  // Login users
+  const loginSel = document.getElementById('loginUser');
+  DATA.usuarios.forEach(u => {
+    loginSel.add(new Option(u, u));
+  });
+
+  // Tipos
+  const tipoSel = document.getElementById('fTipo');
+  const filterTipoSel = document.getElementById('filterTipo');
+  DATA.tipos.forEach(t => {
+    tipoSel.add(new Option(t, t));
+    filterTipoSel.add(new Option(t, t));
+  });
+
+  // EPS
+  const epsSel = document.getElementById('fEpsDestino');
+  DATA.eps.forEach(e => {
+    epsSel.add(new Option(e.n, e.n));
+  });
+
+  // Supervisores
+  const supSel = document.getElementById('fSupervisor');
+  DATA.supervisores.forEach(s => {
+    supSel.add(new Option(s, s));
+  });
+
+  // Centros
+  const centroSel = document.getElementById('fCentro');
+  DATA.centros.forEach(c => {
+    centroSel.add(new Option(`${c.id} - ${c.n}`, c.id));
+  });
+
+  // Depositos (unique from EPS)
+  const depSel = document.getElementById('fDeposito');
+  const deps = [...new Set(DATA.eps.map(e => e.d))].sort();
+  deps.forEach(d => depSel.add(new Option(d, d)));
+
+  // Filter user
+  const filterUserSel = document.getElementById('filterUser');
+  DATA.usuarios.forEach(u => {
+    filterUserSel.add(new Option(u, u));
+  });
+}
+
+function setupSearchableSelects() {
+  setupSearchable('fOrigem', 'fOrigemDropdown', DATA.origens);
+  setupSearchable('fDestino', 'fDestinoDropdown', FAZENDAS_LIST);
+  setupSearchable('fMaterial', 'fMaterialDropdown', DATA.materiais.map(m => m.d), (val) => {
+    const mat = DATA.materiais.find(m => m.d === val);
+    if (mat) {
+      document.getElementById('fCodProduto').value = mat.c;
+      document.getElementById('fUnidade').value = mat.u;
+      // Show embalagem section if material controls packaging
+      const embSection = document.getElementById('embSection');
+      embSection.style.display = mat.e === 'S' ? 'block' : 'none';
+    }
+  });
+}
+
+function setupSearchable(inputId, dropdownId, items, onSelect) {
+  const input = document.getElementById(inputId);
+  const dropdown = document.getElementById(dropdownId);
+
+  input.addEventListener('focus', () => {
+    showDropdown(dropdown, items, input, '', onSelect);
+  });
+
+  input.addEventListener('input', () => {
+    showDropdown(dropdown, items, input, input.value, onSelect);
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+      dropdown.classList.remove('open');
+    }
+  });
+}
+
+function showDropdown(dropdown, items, input, filter, onSelect) {
+  const f = filter.toLowerCase();
+  const filtered = f ? items.filter(i => i.toLowerCase().includes(f)) : items;
+  const show = filtered.slice(0, 50);
+
+  dropdown.innerHTML = show.map(item =>
+    `<div class="select-search-option" data-value="${item}">${item}</div>`
+  ).join('');
+
+  dropdown.classList.add('open');
+
+  dropdown.querySelectorAll('.select-search-option').forEach(opt => {
+    opt.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      input.value = opt.dataset.value;
+      dropdown.classList.remove('open');
+      if (onSelect) onSelect(opt.dataset.value);
+    });
+  });
+}
+
+// ==================== LOGIN ====================
+function doLogin() {
+  const user = document.getElementById('loginUser').value;
+  if (!user) return;
+  currentUser = user;
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('userName').textContent = user;
+  document.getElementById('userAvatar').textContent = user.charAt(0).toUpperCase();
+  updateDashboard();
+  renderTable();
+}
+
+function doLogout() {
+  currentUser = '';
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('loginScreen').style.display = 'flex';
+}
+
+// ==================== TABS ====================
+function switchTab(tab, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  btn.classList.add('active');
+  if (tab === 'dashboard') updateDashboard();
+  if (tab === 'registros') renderTable();
+}
+
+// ==================== FORM ====================
+let currentNfTipo = 'pedido'; // 'pedido' or 'writer'
+
+function setNfTipo(tipo) {
+  currentNfTipo = tipo;
+  const btns = document.querySelectorAll('.nf-toggle-btn');
+  btns[0].classList.toggle('active', tipo === 'pedido');
+  btns[1].classList.toggle('active', tipo === 'writer');
+  btns[1].classList.toggle('writer-active', tipo === 'writer');
+
+  const writerNotice = document.getElementById('writerNotice');
+  const pedidoGroup = document.getElementById('fPedidoGroup');
+  const motivoGroup = document.getElementById('fMotivoGroup');
+  const dataSistGroup = document.getElementById('fDataSistemicoGroup');
+  const migoGroup = document.getElementById('fMigoGroup');
+
+  if (tipo === 'writer') {
+    writerNotice.classList.add('visible');
+    pedidoGroup.style.display = 'none';
+    document.getElementById('fPedido').value = 'WRITER';
+    motivoGroup.style.display = 'flex';
+    dataSistGroup.style.display = 'none';
+    migoGroup.style.display = 'none';
+    document.getElementById('fDataSistemico').value = '';
+    document.getElementById('fMigo').value = '';
+  } else {
+    writerNotice.classList.remove('visible');
+    pedidoGroup.style.display = 'flex';
+    document.getElementById('fPedido').value = '';
+    motivoGroup.style.display = 'none';
+    dataSistGroup.style.display = 'flex';
+    migoGroup.style.display = 'flex';
+  }
+}
+
+function onTipoChange() {
+  const tipo = document.getElementById('fTipo').value;
+  const embTypes = ['Retirada', 'Devolução', 'Transferencia Entre EPS'];
+  if (embTypes.includes(tipo)) {
+    document.getElementById('embSection').style.display = 'block';
+  }
+}
+
+function saveMovimento(e) {
+  e.preventDefault();
+
+  const isWriter = currentNfTipo === 'writer';
+  const hasSystemData = document.getElementById('fDataSistemico').value && document.getElementById('fMigo').value;
+
+  const mov = {
+    id: editingId || Date.now(),
+    dataFisico: document.getElementById('fDataFisico').value,
+    tipo: document.getElementById('fTipo').value,
+    origem: document.getElementById('fOrigem').value,
+    destino: document.getElementById('fDestino').value,
+    epsDestino: document.getElementById('fEpsDestino').value,
+    supervisor: document.getElementById('fSupervisor').value,
+    centro: document.getElementById('fCentro').value,
+    deposito: document.getElementById('fDeposito').value,
+    pedido: document.getElementById('fPedido').value,
+    motivo: document.getElementById('fMotivo').value,
+    remessa: document.getElementById('fRemessa').value,
+    nf: document.getElementById('fNF').value,
+    dataSistemico: document.getElementById('fDataSistemico').value,
+    migo: document.getElementById('fMigo').value,
+    codProduto: document.getElementById('fCodProduto').value,
+    material: document.getElementById('fMaterial').value,
+    quantidade: parseFloat(document.getElementById('fQuantidade').value) || 0,
+    unidade: document.getElementById('fUnidade').value,
+    lote: document.getElementById('fLote').value,
+    dataDevEmb: document.getElementById('fDataDevEmb').value,
+    embDevolver: parseInt(document.getElementById('fEmbDevolver').value) || 0,
+    caixasDevolver: parseInt(document.getElementById('fCaixasDevolver').value) || 0,
+    contEmb: document.getElementById('fContEmb').value,
+    inseridoPor: currentUser,
+    inseridoEm: new Date().toISOString(),
+    status: isWriter ? 'pendente' : 'finalizado',
+    nfTipo: isWriter ? 'writer' : 'pedido'
+  };
+
+  // Keep existing status if editing and already finalized
+  if (editingId) {
+    const existing = movimentos.find(m => m.id === editingId);
+    if (existing && existing.status === 'finalizado') {
+      mov.status = 'finalizado';
+    }
+    if (existing) {
+      mov.finalizadoPor = existing.finalizadoPor;
+      mov.finalizadoEm = existing.finalizadoEm;
+    }
+    const idx = movimentos.findIndex(m => m.id === editingId);
+    if (idx !== -1) movimentos[idx] = mov;
+    editingId = null;
+    showToast('Movimentação atualizada com sucesso!');
+  } else {
+    movimentos.push(mov);
+    showToast(isWriter
+      ? 'WRITER registrada! Ficará pendente até finalizar.'
+      : 'Movimentação registrada com sucesso!');
+  }
+
+  saveToStorage();
+  resetForm();
+  updateDashboard();
+  renderTable();
+}
+
+function finalizarWriter(id) {
+  const mov = movimentos.find(m => m.id === id);
+  if (!mov) return;
+
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.innerHTML = `
+    <div class="modal">
+      <div class="modal-title" style="color:#ff8800">Finalizar WRITER</div>
+      <div class="modal-text">
+        <strong>${mov.material}</strong> — ${mov.quantidade.toLocaleString('pt-BR')} ${mov.unidade}<br>
+        ${mov.origem} → ${mov.destino}<br>
+        NF: ${mov.nf} | Motivo: ${mov.motivo || '-'}
+      </div>
+      <div class="modal-form-group">
+        <label>Data Mov. Sistêmico *</label>
+        <input type="date" id="finDataSist">
+      </div>
+      <div class="modal-form-group">
+        <label>MIGO *</label>
+        <input type="text" id="finMigo" placeholder="Nº MIGO">
+      </div>
+      <div class="modal-form-group">
+        <label>Nº Pedido (se houver)</label>
+        <input type="text" id="finPedido" placeholder="Nº do pedido" value="${mov.pedido === 'WRITER' ? '' : mov.pedido}">
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="this.closest('.modal-overlay').remove()">Cancelar</button>
+        <button class="btn btn-primary" id="finConfirmBtn">Finalizar</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+
+  overlay.querySelector('#finConfirmBtn').addEventListener('click', () => {
+    const dataSist = overlay.querySelector('#finDataSist').value;
+    const migo = overlay.querySelector('#finMigo').value;
+    const pedido = overlay.querySelector('#finPedido').value;
+
+    if (!dataSist || !migo) {
+      showToast('Preencha Data Mov. Sistêmico e MIGO para finalizar.', true);
+      return;
+    }
+
+    mov.dataSistemico = dataSist;
+    mov.migo = migo;
+    if (pedido) mov.pedido = pedido;
+    mov.status = 'finalizado';
+    mov.finalizadoPor = currentUser;
+    mov.finalizadoEm = new Date().toISOString();
+
+    saveToStorage();
+    updateDashboard();
+    renderTable();
+    overlay.remove();
+    showToast('WRITER finalizada com sucesso!');
+  });
+
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) overlay.remove();
+  });
+}
+
+function resetForm() {
+  document.getElementById('movForm').reset();
+  document.getElementById('fCodProduto').value = '';
+  document.getElementById('fUnidade').value = '';
+  document.getElementById('embSection').style.display = 'none';
+  editingId = null;
+  setNfTipo('pedido');
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('fDataFisico').value = today;
+}
+
+function editMov(id) {
+  const mov = movimentos.find(m => m.id === id);
+  if (!mov) return;
+
+  editingId = id;
+  document.getElementById('fDataFisico').value = mov.dataFisico;
+  document.getElementById('fTipo').value = mov.tipo;
+  document.getElementById('fOrigem').value = mov.origem;
+  document.getElementById('fDestino').value = mov.destino;
+  document.getElementById('fEpsDestino').value = mov.epsDestino;
+  document.getElementById('fSupervisor').value = mov.supervisor;
+  document.getElementById('fCentro').value = mov.centro;
+  document.getElementById('fDeposito').value = mov.deposito;
+  document.getElementById('fPedido').value = mov.pedido;
+  document.getElementById('fMotivo').value = mov.motivo;
+  document.getElementById('fRemessa').value = mov.remessa;
+  document.getElementById('fNF').value = mov.nf;
+  document.getElementById('fDataSistemico').value = mov.dataSistemico;
+  document.getElementById('fMigo').value = mov.migo;
+  document.getElementById('fCodProduto').value = mov.codProduto;
+  document.getElementById('fMaterial').value = mov.material;
+  document.getElementById('fQuantidade').value = mov.quantidade;
+  document.getElementById('fUnidade').value = mov.unidade;
+  document.getElementById('fLote').value = mov.lote;
+  document.getElementById('fDataDevEmb').value = mov.dataDevEmb;
+  document.getElementById('fEmbDevolver').value = mov.embDevolver;
+  document.getElementById('fCaixasDevolver').value = mov.caixasDevolver;
+  document.getElementById('fContEmb').value = mov.contEmb;
+
+  // Restore NF tipo
+  setNfTipo(mov.nfTipo === 'writer' ? 'writer' : 'pedido');
+
+  const embTypes = ['Retirada', 'Devolução', 'Transferencia Entre EPS'];
+  if (embTypes.includes(mov.tipo) || mov.embDevolver > 0) {
+    document.getElementById('embSection').style.display = 'block';
+  }
+
+  // Switch to form tab
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-novo').classList.add('active');
+  document.querySelectorAll('.nav-tab')[1].classList.add('active');
+
+  showToast('Editando movimentação #' + id);
+}
+
+function deleteMov(id) {
+  showModal(
+    'Confirmar Exclusão',
+    'Deseja realmente excluir esta movimentação? Esta ação não pode ser desfeita.',
+    () => {
+      movimentos = movimentos.filter(m => m.id !== id);
+      saveToStorage();
+      updateDashboard();
+      renderTable();
+      showToast('Movimentação excluída.');
+    }
+  );
+}
+
+// ==================== TABLE ====================
+function getFilteredData() {
+  let data = [...movimentos];
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  const filterTipo = document.getElementById('filterTipo').value;
+  const filterStatus = document.getElementById('filterStatus').value;
+  const filterUser = document.getElementById('filterUser').value;
+
+  if (search) {
+    data = data.filter(m =>
+      Object.values(m).some(v => String(v).toLowerCase().includes(search))
+    );
+  }
+  if (filterTipo) data = data.filter(m => m.tipo === filterTipo);
+  if (filterStatus) data = data.filter(m => (m.status || 'finalizado') === filterStatus);
+  if (filterUser) data = data.filter(m => m.inseridoPor === filterUser);
+
+  // Sort
+  data.sort((a, b) => {
+    let va = a[sortField], vb = b[sortField];
+    if (typeof va === 'string') va = va.toLowerCase();
+    if (typeof vb === 'string') vb = vb.toLowerCase();
+    if (va < vb) return -1 * sortDir;
+    if (va > vb) return 1 * sortDir;
+    return 0;
+  });
+
+  return data;
+}
+
+function getBadgeClass(tipo) {
+  if (tipo.includes('Retirada')) return 'badge-retirada';
+  if (tipo.includes('Devolução') || tipo.includes('Devolu')) return 'badge-devolucao';
+  if (tipo.includes('Transferencia') || tipo.includes('Transfer')) return 'badge-transferencia';
+  if (tipo.includes('Cancelada')) return 'badge-cancelada';
+  return 'badge-other';
+}
+
+function formatDate(d) {
+  if (!d) return '-';
+  const parts = d.split('-');
+  if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
+  return d;
+}
+
+function renderTable() {
+  const data = getFilteredData();
+  const totalPages = Math.ceil(data.length / PAGE_SIZE);
+  if (currentPage > totalPages) currentPage = Math.max(1, totalPages);
+
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const pageData = data.slice(start, start + PAGE_SIZE);
+
+  const tbody = document.getElementById('mainTable');
+  tbody.innerHTML = pageData.map((m, i) => {
+    const isPendente = m.status === 'pendente';
+    const statusHtml = isPendente
+      ? `<span class="status-pendente"><svg style="width:10px;height:10px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>PENDENTE</span>`
+      : `<span class="status-finalizado"><svg style="width:10px;height:10px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>FINALIZADO</span>`;
+    return `
+    <tr onclick="showDetail(${m.id})"${isPendente ? ' style="border-left:3px solid #ff8800"' : ''}>
+      <td style="color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:0.75rem">${start + i + 1}</td>
+      <td>${formatDate(m.dataFisico)}</td>
+      <td><span class="badge ${getBadgeClass(m.tipo)}">${m.tipo}</span></td>
+      <td>${statusHtml}</td>
+      <td>${m.origem || '-'}</td>
+      <td>${m.destino || '-'}</td>
+      <td style="max-width:220px;overflow:hidden;text-overflow:ellipsis" title="${m.material}">${m.material || '-'}</td>
+      <td style="font-family:'JetBrains Mono',monospace;font-weight:600">${m.quantidade.toLocaleString('pt-BR')}</td>
+      <td>${m.unidade || '-'}</td>
+      <td><span class="inserted-by">${m.inseridoPor}</span></td>
+      <td style="white-space:nowrap" onclick="event.stopPropagation()">
+        ${isPendente ? `<button class="btn-finalizar" onclick="finalizarWriter(${m.id})" title="Finalizar WRITER">Finalizar</button>` : ''}
+        <button class="btn-del" onclick="editMov(${m.id})" title="Editar">
+          <svg style="width:14px;height:14px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </button>
+        <button class="btn-del" onclick="deleteMov(${m.id})" title="Excluir">
+          <svg style="width:14px;height:14px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+        </button>
+      </td>
+    </tr>`;
+  }).join('');
+
+  // Page info
+  document.getElementById('pageInfo').textContent =
+    `Mostrando ${data.length > 0 ? start + 1 : 0}–${Math.min(start + PAGE_SIZE, data.length)} de ${data.length} registros`;
+
+  // Pagination buttons
+  const pgContainer = document.getElementById('paginationBtns');
+  let pgHtml = `<button class="pg-btn" onclick="goPage(${currentPage - 1})" ${currentPage <= 1 ? 'disabled' : ''}>&lt;</button>`;
+
+  for (let p = 1; p <= totalPages; p++) {
+    if (totalPages <= 7 || p === 1 || p === totalPages || Math.abs(p - currentPage) <= 1) {
+      pgHtml += `<button class="pg-btn ${p === currentPage ? 'active' : ''}" onclick="goPage(${p})">${p}</button>`;
+    } else if (Math.abs(p - currentPage) === 2) {
+      pgHtml += `<span style="color:var(--text-dim);padding:0 4px">...</span>`;
+    }
+  }
+
+  pgHtml += `<button class="pg-btn" onclick="goPage(${currentPage + 1})" ${currentPage >= totalPages ? 'disabled' : ''}>&gt;</button>`;
+  pgContainer.innerHTML = pgHtml;
+}
+
+function goPage(p) {
+  const data = getFilteredData();
+  const totalPages = Math.ceil(data.length / PAGE_SIZE);
+  if (p < 1 || p > totalPages) return;
+  currentPage = p;
+  renderTable();
+}
+
+function sortTable(field) {
+  if (sortField === field) {
+    sortDir *= -1;
+  } else {
+    sortField = field;
+    sortDir = 1;
+  }
+  renderTable();
+}
+
+function filterTable() {
+  currentPage = 1;
+  renderTable();
+}
+
+// ==================== DASHBOARD ====================
+function updateDashboard() {
+  const total = movimentos.length;
+  const retiradas = movimentos.filter(m => m.tipo === 'Retirada').length;
+  const devolucoes = movimentos.filter(m => m.tipo === 'Devolução').length;
+  const writers = movimentos.filter(m => m.status === 'pendente').length;
+  const pendEmb = movimentos.filter(m => m.contEmb === 'SIM' && m.embDevolver > 0).length;
+
+  animateCounter('statTotal', total);
+  animateCounter('statRetiradas', retiradas);
+  animateCounter('statDevolucoes', devolucoes);
+  animateCounter('statWriters', writers);
+  animateCounter('statPendEmb', pendEmb);
+
+  // Chart - Tipos
+  const tipoCount = {};
+  DATA.tipos.forEach(t => tipoCount[t] = 0);
+  movimentos.forEach(m => { if (tipoCount[m.tipo] !== undefined) tipoCount[m.tipo]++; });
+  const maxTipo = Math.max(1, ...Object.values(tipoCount));
+  const colors = ['', 'alt1', 'alt2', 'alt3'];
+
+  document.getElementById('chartTipos').innerHTML = Object.entries(tipoCount)
+    .sort((a, b) => b[1] - a[1])
+    .map(([label, count], i) => `
+      <div class="bar-row">
+        <div class="bar-label">${label}</div>
+        <div class="bar-track">
+          <div class="bar-fill ${colors[i % 4]}" style="width:${(count / maxTipo) * 100}%" data-value="${count}"></div>
+        </div>
+      </div>
+    `).join('');
+
+  // Chart - Usuarios
+  const userCount = {};
+  DATA.usuarios.forEach(u => userCount[u] = 0);
+  movimentos.forEach(m => { if (userCount[m.inseridoPor] !== undefined) userCount[m.inseridoPor]++; });
+  const maxUser = Math.max(1, ...Object.values(userCount));
+
+  document.getElementById('chartUsuarios').innerHTML = Object.entries(userCount)
+    .sort((a, b) => b[1] - a[1])
+    .map(([label, count], i) => `
+      <div class="bar-row">
+        <div class="bar-label">${label}</div>
+        <div class="bar-track">
+          <div class="bar-fill ${colors[i % 4]}" style="width:${(count / maxUser) * 100}%" data-value="${count}"></div>
+        </div>
+      </div>
+    `).join('');
+
+  // Recent table (last 10)
+  const recent = [...movimentos].reverse().slice(0, 10);
+  document.getElementById('recentTable').innerHTML = recent.map(m => {
+    const isPendente = m.status === 'pendente';
+    const statusHtml = isPendente
+      ? '<span class="status-pendente" style="font-size:0.65rem">PENDENTE</span>'
+      : '<span class="status-finalizado" style="font-size:0.65rem">OK</span>';
+    return `
+    <tr>
+      <td>${formatDate(m.dataFisico)}</td>
+      <td><span class="badge ${getBadgeClass(m.tipo)}">${m.tipo}</span></td>
+      <td>${statusHtml}</td>
+      <td>${m.origem || '-'}</td>
+      <td>${m.destino || '-'}</td>
+      <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis" title="${m.material}">${m.material || '-'}</td>
+      <td style="font-family:'JetBrains Mono',monospace">${m.quantidade.toLocaleString('pt-BR')}</td>
+      <td><span class="inserted-by">${m.inseridoPor}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+function animateCounter(id, target) {
+  const el = document.getElementById(id);
+  const current = parseInt(el.textContent) || 0;
+  if (current === target) { el.textContent = target; return; }
+  const duration = 500;
+  const step = (target - current) / (duration / 16);
+  let val = current;
+  const timer = setInterval(() => {
+    val += step;
+    if ((step > 0 && val >= target) || (step < 0 && val <= target)) {
+      el.textContent = target;
+      clearInterval(timer);
+    } else {
+      el.textContent = Math.round(val);
+    }
+  }, 16);
+}
+
+// ==================== EXPORT CSV ====================
+function exportCSV() {
+  const data = getFilteredData();
+  if (data.length === 0) { showToast('Nenhum registro para exportar.', true); return; }
+
+  const headers = ['Data Mov. Físico','Tipo','Status','Origem','Destino','EPS Destino','Supervisor','Centro','Depósito','Pedido','Motivo','Remessa','NF','Data Mov. Sistêmico','MIGO','Cód. Produto','Material','Quantidade','Unidade','Lote','Data Dev. Emb.','Emb. Devolver','Caixas Devolver','Cont. Embalagem','Inserido por','Inserido em','Finalizado por','Finalizado em'];
+  const keys = ['dataFisico','tipo','status','origem','destino','epsDestino','supervisor','centro','deposito','pedido','motivo','remessa','nf','dataSistemico','migo','codProduto','material','quantidade','unidade','lote','dataDevEmb','embDevolver','caixasDevolver','contEmb','inseridoPor','inseridoEm','finalizadoPor','finalizadoEm'];
+
+  let csv = '\uFEFF' + headers.join(';') + '\n';
+  data.forEach(m => {
+    csv += keys.map(k => `"${String(m[k] || '').replace(/"/g, '""')}"`).join(';') + '\n';
+  });
+
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `CTI_2026_Export_${new Date().toISOString().split('T')[0]}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast(`${data.length} registros exportados!`);
+}
+
+// ==================== TOAST ====================
+function showToast(msg, isError = false) {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = `toast ${isError ? 'error' : ''}`;
+  toast.innerHTML = `
+    <svg style="width:18px;height:18px;flex-shrink:0" viewBox="0 0 24 24" fill="none" stroke="${isError ? 'var(--red)' : 'var(--neon)'}" stroke-width="2">
+      ${isError
+        ? '<circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>'
+        : '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>'}
+    </svg>
+    ${msg}
+  `;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(30px)';
+    toast.style.transition = 'all 0.3s ease';
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
+}
+
+// ==================== MODAL ====================
+function showModal(title, text, onConfirm) {
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.innerHTML = `
+    <div class="modal">
+      <div class="modal-title">${title}</div>
+      <div class="modal-text">${text}</div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="this.closest('.modal-overlay').remove()">Cancelar</button>
+        <button class="btn btn-danger" id="modalConfirmBtn">Confirmar</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  overlay.querySelector('#modalConfirmBtn').addEventListener('click', () => {
+    overlay.remove();
+    onConfirm();
+  });
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) overlay.remove();
+  });
+}
+
+// ==================== DETAIL MODAL ====================
+function showDetail(id) {
+  const m = movimentos.find(x => x.id === id);
+  if (!m) return;
+
+  const isPendente = m.status === 'pendente';
+  const statusBadge = isPendente
+    ? '<span class="status-pendente" style="font-size:0.75rem">PENDENTE</span>'
+    : '<span class="status-finalizado" style="font-size:0.75rem">FINALIZADO</span>';
+
+  function field(label, value, isMono) {
+    const val = value || '';
+    const cls = val ? (isMono ? 'mono' : '') : 'empty';
+    return `<div class="detail-field">
+      <div class="detail-field-label">${label}</div>
+      <div class="detail-field-value ${cls}">${val || '—'}</div>
+    </div>`;
+  }
+
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.innerHTML = `
+    <div class="detail-modal">
+      <div class="detail-header">
+        <div class="detail-header-left">
+          <span class="badge ${getBadgeClass(m.tipo)}" style="font-size:0.75rem">${m.tipo}</span>
+          ${statusBadge}
+        </div>
+        <button class="detail-close" onclick="this.closest('.modal-overlay').remove()">✕</button>
+      </div>
+      <div class="detail-body">
+
+        <div class="detail-section">
+          <div class="detail-section-title">Movimentação</div>
+          <div class="detail-grid">
+            ${field('Data Mov. Físico', formatDate(m.dataFisico))}
+            ${field('Tipo', m.tipo)}
+            ${field('Origem / EPS Fornecedora', m.origem)}
+            ${field('Destino (Fazenda)', m.destino)}
+            ${field('EPS Destino', m.epsDestino)}
+            ${field('Supervisor', m.supervisor)}
+            ${field('Centro Destino', m.centro, true)}
+            ${field('Depósito', m.deposito, true)}
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <div class="detail-section-title">Pedido / Nota Fiscal</div>
+          <div class="detail-grid">
+            ${field('Tipo NF', m.nfTipo === 'writer' ? 'WRITER (sem mov. sistêmico)' : 'Via Pedido')}
+            ${field('Pedido', m.pedido, true)}
+            ${field('Motivo', m.motivo)}
+            ${field('Remessa', m.remessa, true)}
+            ${field('NF', m.nf, true)}
+            ${field('Data Mov. Sistêmico', formatDate(m.dataSistemico))}
+            ${field('MIGO', m.migo, true)}
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <div class="detail-section-title">Material</div>
+          <div class="detail-grid">
+            <div class="detail-field full">
+              <div class="detail-field-label">Texto Breve Material</div>
+              <div class="detail-field-value" style="font-size:1rem;font-weight:600">${m.material || '—'}</div>
+            </div>
+            ${field('Código Produto', m.codProduto, true)}
+            ${field('Quantidade', m.quantidade ? m.quantidade.toLocaleString('pt-BR') : '', true)}
+            ${field('Unidade', m.unidade)}
+            ${field('Lote', m.lote, true)}
+          </div>
+        </div>
+
+        ${(m.contEmb === 'SIM' || m.embDevolver > 0 || m.dataDevEmb) ? `
+        <div class="detail-section">
+          <div class="detail-section-title">Controle de Embalagens</div>
+          <div class="detail-grid">
+            ${field('Data Devolução Embalagens', formatDate(m.dataDevEmb))}
+            ${field('Embalagens a Devolver', m.embDevolver ? String(m.embDevolver) : '', true)}
+            ${field('Caixas a Devolver', m.caixasDevolver ? String(m.caixasDevolver) : '', true)}
+            ${field('Contabilizar Embalagem', m.contEmb)}
+          </div>
+        </div>` : ''}
+
+      </div>
+      <div class="detail-footer">
+        <div>
+          Inserido por <strong style="color:var(--neon)">${m.inseridoPor}</strong>
+          ${m.inseridoEm ? ' em ' + new Date(m.inseridoEm).toLocaleString('pt-BR') : ''}
+          ${m.finalizadoPor ? ` · Finalizado por <strong style="color:var(--neon)">${m.finalizadoPor}</strong>` : ''}
+        </div>
+        <div class="detail-actions">
+          ${isPendente ? `<button class="btn-finalizar" onclick="this.closest('.modal-overlay').remove(); finalizarWriter(${m.id})">Finalizar</button>` : ''}
+          <button class="btn btn-secondary" style="padding:6px 14px;font-size:0.8rem" onclick="this.closest('.modal-overlay').remove(); editMov(${m.id})">Editar</button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) overlay.remove();
+  });
+  // Close on Escape
+  const esc = (e) => { if (e.key === 'Escape') { overlay.remove(); document.removeEventListener('keydown', esc); } };
+  document.addEventListener('keydown', esc);
+}
+
+// ==================== START ====================
+init();
+</script>
+</body>
+</html>

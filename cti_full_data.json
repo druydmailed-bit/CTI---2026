@@ -1,0 +1,646 @@
+{
+  "materiais_full": [
+    {
+      "d": "ADUBO 06-34-05",
+      "c": "90000850",
+      "g": "Fertilizantes",
+      "u": "KG",
+      "e": "N"
+    },
+    {
+      "d": "ADUBO 07-22-13",
+      "c": "90000825",
+      "g": "Fertilizantes",
+      "u": "KG",
+      "e": "N"
+    },
+    {
+      "d": "ADUBO 1000 KG 00-00-54",
+      "c": "90000764",
+      "g": "Fertilizantes",
+      "u": "KG",
+      "e": "N"
+    },
+    {
+      "d": "ADUBO 1000 KG 22-00-12",
+      "c": "90000760",
+      "g": "Fertilizantes",
+      "u": "KG",
+      "e": "N"
+    },
+    {
+      "d": "ADUBO 1000KG 08-39-09",
+      "c": "90000832",
+      "g": "Fertilizantes",
+      "u": "",
+      "e": "N"
+    },
+    {
+      "d": "ADUBO 1000KG 09-27-9",
+      "c": "90000823",
+      "g": "Fertilizantes",
+      "u": "KG",
+      "e": "N"
+    },
+    {
+      "d": "ADUBO 1000KG 09-36-07",
+      "c": "90000831",
+      "g": "Fertilizantes",
+      "u": "",
+      "e": "N"
+    },
+    {
+      "d": "ADUBO 1000KG 10-00-35",
+      "c": "90000758",
+      "g": "Fertilizantes",
+      "u": "KG",
+      "e": "N"
+    },
+    {
+      "d": "ADUBO 1000KG 13-24-13",
+      "c": "90000799",
+      "g": "Fertilizantes",
+      "u": "KG",
+      "e": "N"
+    },
+    {
+      "d": "ADUBO 1000KG 14-00-28",
+      "c": "90000757",
+      "g": "Fertilizantes",
+      "u": "KG",
+      "e": "N"
+    },
+    {
+      "d": "ADUBO 11-23-12",
+      "c": "90000849",
+      "g": "Fertilizantes",
+      "u": "",
+      "e": "N"
+    },
+    {
+      "d": "ADUBO ACRIL 25KG COPOLIMERO",
+      "c": "90000821",
+      "g": "Fertilizantes",
+      "u": "KG",
+      "e": "S"
+    },
+    {
+      "d": "ADUBO BOROTOP 25KG OCTABORATO SODIO TETR",
+      "c": "90000782",
+      "g": "Fertilizantes",
+      "u": "KG",
+      "e": "S"
+    },
+    {
+      "d": "ADUBO MAP 25KG",
+      "c": "90000804",
+      "g": "Fertilizantes",
+      "u": "KG",
+      "e": "S"
+    },
+    {
+      "d": "CAL VIRGEM HIDRATADA",
+      "c": "120037791",
+      "g": "Apoio",
+      "u": "",
+      "e": "S"
+    },
+    {
+      "d": "CULTIVO- FERTILIZANTE ORGANOMINERAL",
+      "c": "90000966",
+      "g": "Fertilizantes",
+      "u": "",
+      "e": "N"
+    },
+    {
+      "d": "EFF OIL CONCENTRADO EMULSIONADO",
+      "c": "90000772",
+      "g": "Adjuvante",
+      "u": "L",
+      "e": "S"
+    },
+    {
+      "d": "FERTILIZANTES SULFATO DE ZINCO",
+      "c": "90000807",
+      "g": "Fertilizantes",
+      "u": "KG",
+      "e": "N"
+    },
+    {
+      "d": "FINALE HERBICIDA GALAO 10L",
+      "c": "90000754",
+      "g": "Herbicida",
+      "u": "L",
+      "e": "S"
+    },
+    {
+      "d": "FIPRONIL PIRAZOL EMBALAGEM 1KG GRANULADO",
+      "c": "90000774",
+      "g": "Inseticida",
+      "u": "KG",
+      "e": "S"
+    },
+    {
+      "d": "FORMICIDA ISCA ATTA MEX-S 5KG",
+      "c": "90000834",
+      "g": "Formicida",
+      "u": "KG",
+      "e": "S"
+    },
+    {
+      "d": "FORMICIDA ISCA DINAGRO S 5KG",
+      "c": "70000138",
+      "g": "Formicida",
+      "u": "KG",
+      "e": "S"
+    },
+    {
+      "d": "FORMICIDA ISCA GRANULADA ATEXZO 5KG",
+      "c": "90000755",
+      "g": "Formicida",
+      "u": "KG",
+      "e": "S"
+    },
+    {
+      "d": "FORMICIDA MIREX C MAX N AISCA 5KG",
+      "c": "90000812",
+      "g": "Formicida",
+      "u": "KG",
+      "e": "S"
+    },
+    {
+      "d": "FORT-PHOS- FERTILIZANTE ORGANOMINERAL",
+      "c": "90000965",
+      "g": "Fertilizantes",
+      "u": "",
+      "e": "N"
+    },
+    {
+      "d": "FUNGICIDA COMET",
+      "c": "90000809",
+      "g": "Fungicida",
+      "u": "KG",
+      "e": "S"
+    },
+    {
+      "d": "FUNGICIDA NATIVO 5L",
+      "c": "90000820",
+      "g": "Fungicida",
+      "u": "L",
+      "e": "S"
+    },
+    {
+      "d": "FUNGICIDA TRICHODERMIL SUPER SC GALAO 5L",
+      "c": "120040036",
+      "g": "Fungicida",
+      "u": "",
+      "e": "S"
+    },
+    {
+      "d": "HERBICIDA DISTINTOBR 5KG",
+      "c": "90000749",
+      "g": "Herbicida",
+      "u": "L",
+      "e": "S"
+    },
+    {
+      "d": "HERBICIDA FALCON 20L",
+      "c": "90000780",
+      "g": "Herbicida",
+      "u": "L",
+      "e": "S"
+    },
+    {
+      "d": "HERBICIDA FORDOR FLEX 1KG",
+      "c": "90000846",
+      "g": "Herbicida",
+      "u": "KG",
+      "e": "S"
+    },
+    {
+      "d": "HERBICIDA OSBAR 5KG",
+      "c": "90000779",
+      "g": "Herbicida",
+      "u": "",
+      "e": "S"
+    },
+    {
+      "d": "HERBICIDA PALMERO 1KG",
+      "c": "90000751",
+      "g": "Herbicida",
+      "u": "KG",
+      "e": "S"
+    },
+    {
+      "d": "HERBICIDA PONTEIROBR 20L",
+      "c": "90000750",
+      "g": "Herbicida",
+      "u": "L",
+      "e": "S"
+    },
+    {
+      "d": "HERBICIDA POS EMERGENTE AGILE 5L",
+      "c": "90000769",
+      "g": "Herbicida",
+      "u": "L",
+      "e": "S"
+    },
+    {
+      "d": "HERBICIDA POS EMERGENTE MISSIL 5L",
+      "c": "90000853",
+      "g": "Herbicida",
+      "u": "",
+      "e": "S"
+    },
+    {
+      "d": "HERBICIDA POS EMERGENTE OUTLINER 20LT",
+      "c": "90000791",
+      "g": "Herbicida",
+      "u": "L",
+      "e": "S"
+    },
+    {
+      "d": "HERBICIDA POS EMERGENTE SCOUT 5KG",
+      "c": "90000801",
+      "g": "Herbicida",
+      "u": "KG",
+      "e": "S"
+    },
+    {
+      "d": "HERBICIDA POS EMERGENTE SECTOR 20LT",
+      "c": "90000790",
+      "g": "Herbicida",
+      "u": "L",
+      "e": "S"
+    },
+    {
+      "d": "HERBICIDA POS EMERGENTE TOUCHDOWN 20LT",
+      "c": "90000836",
+      "g": "Herbicida",
+      "u": "L",
+      "e": "S"
+    },
+    {
+      "d": "HERBICIDA POS EMERGENTE VALEOS 0.350KG",
+      "c": "90000793",
+      "g": "Herbicida",
+      "u": "KG",
+      "e": "S"
+    },
+    {
+      "d": "HERBICIDA PRE EMERGENTE BLOCK 20LT",
+      "c": "90000768",
+      "g": "Herbicida",
+      "u": "L",
+      "e": "S"
+    },
+    {
+      "d": "HERBICIDA PRE EMERGENTE ESPLANADE 1L",
+      "c": "90000815",
+      "g": "Herbicida",
+      "u": "L",
+      "e": "S"
+    },
+    {
+      "d": "HERBICIDA PRE EMERGENTE GOAL 20LT",
+      "c": "90000789",
+      "g": "Herbicida",
+      "u": "L",
+      "e": "S"
+    },
+    {
+      "d": "HERBICIDA PRE EMERGENTE SOLARA 20L",
+      "c": "90000792",
+      "g": "Herbicida",
+      "u": "L",
+      "e": "S"
+    },
+    {
+      "d": "HERBICIDA SOLDIER",
+      "c": "90000762",
+      "g": "Herbicida",
+      "u": "KG",
+      "e": "S"
+    },
+    {
+      "d": "HERBICIDA SUMYZIN 1KG",
+      "c": "90000775",
+      "g": "Herbicida",
+      "u": "L",
+      "e": "S"
+    },
+    {
+      "d": "HERBICIDA SUNWARD 5KG",
+      "c": "90000746",
+      "g": "Herbicida",
+      "u": "KG",
+      "e": "S"
+    },
+    {
+      "d": "HERBICIDA TOPINAM 20L",
+      "c": "90000776",
+      "g": "Herbicida",
+      "u": "L",
+      "e": "S"
+    },
+    {
+      "d": "HERBICIDA TRICLOPIR PERTERRA",
+      "c": "90000991",
+      "g": "Herbicida",
+      "u": "KG",
+      "e": "S"
+    },
+    {
+      "d": "HERBICIDA WG 720 POS EMERGENTE ZAPP 20KG",
+      "c": "90000748",
+      "g": "Herbicida",
+      "u": "KG",
+      "e": "S"
+    },
+    {
+      "d": "INSETICIDA 10 L DIPEL SC",
+      "c": "90000784",
+      "g": "Inseticida",
+      "u": "L",
+      "e": "S"
+    },
+    {
+      "d": "INSETICIDA 5 KG WARRANT 700WG",
+      "c": "90000781",
+      "g": "Inseticida",
+      "u": "KG",
+      "e": "S"
+    },
+    {
+      "d": "INSETICIDA ACTARA 250WG",
+      "c": "90000783",
+      "g": "Inseticida",
+      "u": "KG",
+      "e": "S"
+    },
+    {
+      "d": "INSETICIDA DECIS 25 CE",
+      "c": "90000811",
+      "g": "Inseticida",
+      "u": "KG",
+      "e": "S"
+    },
+    {
+      "d": "INSETICIDA FASTAC 100 GALAO 10L",
+      "c": "90000777",
+      "g": "Inseticida",
+      "u": "",
+      "e": "S"
+    },
+    {
+      "d": "INSETICIDA MOSPILAN WG PSILID 1 KG",
+      "c": "90000766",
+      "g": "Inseticida",
+      "u": "",
+      "e": "S"
+    },
+    {
+      "d": "INSETICIDA PIRETROIDE 1 KG SPERTO",
+      "c": "90000770",
+      "g": "Inseticida",
+      "u": "G",
+      "e": "S"
+    },
+    {
+      "d": "INSETICIDA PREZ",
+      "c": "90000763",
+      "g": "Inseticida",
+      "u": "KG",
+      "e": "S"
+    },
+    {
+      "d": "INSETICIDA TERMINUS 10 L",
+      "c": "90000927",
+      "g": "Inseticida",
+      "u": "L",
+      "e": "S"
+    },
+    {
+      "d": "KCL 00-00-54",
+      "c": "90001050",
+      "g": "Fertilizantes",
+      "u": "",
+      "e": "S"
+    },
+    {
+      "d": "LANDRIN ISCA GRANULADA 1KG",
+      "c": "90000761",
+      "g": "Formicida",
+      "u": "KG",
+      "e": "S"
+    },
+    {
+      "d": "LONA",
+      "c": "120038986",
+      "g": "Apoio",
+      "u": "M2",
+      "e": "N"
+    },
+    {
+      "d": "OLEO MIN IHAROL GOLD ADJ/ESP ADESIV 20L",
+      "c": "90000747",
+      "g": "Adjuvante",
+      "u": "L",
+      "e": "S"
+    },
+    {
+      "d": "OLEO MIN SUPREME N1 20L AGROBIOTECH",
+      "c": "90000753",
+      "g": "Adjuvante",
+      "u": "",
+      "e": "S"
+    },
+    {
+      "d": "OLEO MINERAL CONCENTRADO EMULSIONADO",
+      "c": "90000822",
+      "g": "Adjuvante",
+      "u": "L",
+      "e": "S"
+    },
+    {
+      "d": "PALETE MADEIRA",
+      "c": "120034646",
+      "g": "Apoio",
+      "u": "UN",
+      "e": "N"
+    },
+    {
+      "d": "PALETE MADEIRA",
+      "c": "120042542",
+      "g": "Apoio",
+      "u": "",
+      "e": "N"
+    },
+    {
+      "d": "PALLET",
+      "c": "60000003",
+      "g": "Apoio",
+      "u": "",
+      "e": "N"
+    },
+    {
+      "d": "POLYBLEN FLORESTA 1000KG 11-20-20",
+      "c": "90000829",
+      "g": "Fertilizantes",
+      "u": "",
+      "e": "N"
+    },
+    {
+      "d": "PUPAS BIODIATRAEA TRICHOSPILLU",
+      "c": "120039950",
+      "g": "Inimigos Naturais",
+      "u": "",
+      "e": "N"
+    },
+    {
+      "d": "PUPAS BIOHOWARDI -TETRASTICHUS",
+      "c": "120039949",
+      "g": "Inimigos Naturais",
+      "u": "",
+      "e": "N"
+    },
+    {
+      "d": "SULFATO CU 98 102PCT PO",
+      "c": "90000803",
+      "g": "Apoio",
+      "u": "KG",
+      "e": "N"
+    },
+    {
+      "d": "SULFATO DE AMONIO",
+      "c": "90000187",
+      "g": "Apoio",
+      "u": "",
+      "e": "N"
+    },
+    {
+      "d": "SULFATO DE COBRE",
+      "c": "90000814",
+      "g": "Apoio",
+      "u": "",
+      "e": "N"
+    },
+    {
+      "d": "UREIA 45",
+      "c": "90001052",
+      "g": "Apoio",
+      "u": "",
+      "e": "N"
+    },
+    {
+      "d": "CALGESSO 7030 GRANEL 31%CAO 10%MGO 4.5%S",
+      "c": "90000844",
+      "g": "Fertilizantes",
+      "u": "TO",
+      "e": "N"
+    },
+    {
+      "d": "CALCARIO DOLOMITICO GRANEL",
+      "c": "90000800",
+      "g": "Fertilizantes",
+      "u": "KG",
+      "e": "N"
+    },
+    {
+      "d": "FITA FETILHO 50M",
+      "c": "120039650",
+      "g": "Apoio",
+      "u": "",
+      "e": "N"
+    },
+    {
+      "d": "FILME STRETCH STC POLIETILENO",
+      "c": "120039318",
+      "g": "Apoio",
+      "u": "",
+      "e": "N"
+    },
+    {
+      "d": "ADUBO 1000 KG 19-00-19",
+      "c": "90000830",
+      "g": "Fertilizantes",
+      "u": "KG",
+      "e": "N"
+    },
+    {
+      "d": "HERBICIDA PLEDGE",
+      "c": "90001065",
+      "g": "Herbicida",
+      "u": "L",
+      "e": "S"
+    }
+  ],
+  "supervisores": [
+    "ADILSON GOMES",
+    "ALAOR APARECIDO",
+    "ANJICLEDIO SANTOS",
+    "ELBIMAR POMPILIO",
+    "FAGNER SOARES",
+    "FELIPE STEINER",
+    "FERNANDO GOMES",
+    "GABRIEL VICTOR",
+    "GABRIELA COUTO",
+    "GILMAR SANTOS",
+    "GIOVANI JUNIOR",
+    "GUSTAVO BENTO",
+    "GUSTAVO MATHIAS",
+    "HELENA COSTA",
+    "JEAN RODRIGUES",
+    "JOAO HENRIQUE NASCIMENTO",
+    "JOAO PAULO CAMARGO",
+    "JOAO PEQUENO",
+    "JOAO VITOR POPOVITS",
+    "JOHNNY SANTOS",
+    "JUSCELINO OLIVEIRA",
+    "JUSCELINO SANTOS",
+    "Jean Rodrigues",
+    "LEANDRO MAIA",
+    "LUCIANO SOARES",
+    "MILENA SOUZA",
+    "NUBIA MARTINS",
+    "ORLEY CLAUDINO",
+    "PAULO VICTOR",
+    "PHILIPPE SOUZA",
+    "ROBERTO LIMA",
+    "WAGNER CARVALHO",
+    "WAGNER GARCIA",
+    "WENDELL FERREIRA",
+    "YASMIM GOBBO"
+  ],
+  "origens": [
+    "Almoxarifado Bataguassu",
+    "Almoxarifado Água Clara",
+    "CONQUISTA GLEBA A - RRP",
+    "CONQUISTA GLEBA B - RRP",
+    "FLORESTA II - SRP",
+    "GALILÉIA - SRP",
+    "GUARUJÁ I - RRP",
+    "HP AEROAGRICOLA",
+    "MACHADO - ACL",
+    "MSFC - MODULO I",
+    "NOSSA SENHORA APARECIDA V - INC",
+    "NOSSA SENHORA APARECIDA VI GLEBA B - SRP",
+    "PACAEMBU - SRP",
+    "PARATY - RRP",
+    "RECREIO - SRP",
+    "SAN REMO - ACL",
+    "SANTA LUZIA III - SRP ",
+    "SANTA RITA - RRP",
+    "SANTA ROSA II - BTG",
+    "SÃO GUILHERME - RRP",
+    "SÃO JOSÉ II - BTG",
+    "SÃO JOSÉ III - SRP",
+    "SÃO JOÃO II - BDR",
+    "SÃO MANOEL II - BRS",
+    "SÃO PEDRO - RRP",
+    "TRÊS MENINAS - RRP",
+    "UNIÃO - BRS",
+    "VILLELA MS",
+    "VIVEIRO MSFC BTG"
+  ]
+}
